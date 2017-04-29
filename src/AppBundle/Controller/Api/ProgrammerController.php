@@ -15,6 +15,9 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
+use AppBundle\Pagination\PaginatedCollection;
 
 class ProgrammerController extends BaseController {
   /**
@@ -71,12 +74,28 @@ class ProgrammerController extends BaseController {
    * @Route("/api/programmers")
    * @Method("GET")
    */
-  public function listAction() {
-    $programmers = $this->getDoctrine()
+  public function listAction(Request $request) {
+    $page = $request->query->get('page', 1);
+    
+    $qb = $this->getDoctrine()
       ->getRepository('AppBundle:Programmer')
-      ->findAll();
+      ->findAllQueryBuilder();
+    
+    $adapter = new DoctrineORMAdapter($qb);
+    $pagerfanta = new Pagerfanta($adapter);
+    $pagerfanta->setMaxPerPage(10);
+    $pagerfanta->setCurrentPage($page);
+    
+    $programmers = array();
+    foreach ($pagerfanta->getCurrentPageResults() as $programmer){
+      $programmers[] = $programmer;
+    };
 
-    $response = $this->createApiResponse(['programmers' => $programmers], 200);
+    $paginatedCollection = new PaginatedCollection(
+      $programmers, 
+      $pagerfanta->getNbResults()
+    );
+    $response = $this->createApiResponse($paginatedCollection, 200);
 
     return $response;
   }
