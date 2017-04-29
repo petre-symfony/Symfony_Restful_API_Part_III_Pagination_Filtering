@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
+use AppBundle\Pagination\PaginatedCollection;
 
 class ProgrammerController extends BaseController {
   /**
@@ -90,11 +91,11 @@ class ProgrammerController extends BaseController {
       $programmers[] = $programmer;
     };
 
-    $response = $this->createApiResponse([
-      'total' => $pagerfanta->getNbResults(),
-      'count' => count($programmers),
-      'programmers' => $programmers
-    ], 200);
+    $paginatedCollection = new PaginatedCollection(
+      $programmers, 
+      $pagerfanta->getNbResults()
+    );
+    $response = $this->createApiResponse($paginatedCollection, 200);
 
     return $response;
   }
