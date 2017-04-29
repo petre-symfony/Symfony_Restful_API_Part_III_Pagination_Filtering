@@ -22,4 +22,8 @@ class ProgrammerRepository extends EntityRepository {
   public function findOneByNickname($nickname){
     return $this->findOneBy(array('nickname' => $nickname));
   }
+  
+  public function findAllQueryBuilder() {
+    return $this->createQueryBuilder('programmer');
+  }
 }
