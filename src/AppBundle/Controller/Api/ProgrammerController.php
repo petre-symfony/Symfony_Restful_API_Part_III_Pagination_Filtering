@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pagerfanta\Pagerfanta;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 
 class ProgrammerController extends BaseController {
   /**
@@ -84,8 +85,16 @@ class ProgrammerController extends BaseController {
     $pagerfanta->setMaxPerPage(10);
     $pagerfanta->setCurrentPage($page);
     
+    $programmers = array();
+    foreach ($pagerfanta->getCurrentPageResults() as $programmer){
+      $programmers[] = $programmer;
+    };
 
-    $response = $this->createApiResponse(['programmers' => $programmers], 200);
+    $response = $this->createApiResponse([
+      'total' => $pagerfanta->getNbResults(),
+      'count' => count($programmers),
+      'programmers' => $programmers
+    ], 200);
 
     return $response;
   }
