@@ -71,10 +71,12 @@ class ProgrammerController extends BaseController {
    * @Route("/api/programmers")
    * @Method("GET")
    */
-  public function listAction() {
-    $programmers = $this->getDoctrine()
+  public function listAction(Request $request) {
+    $page = $request->query->get('page', 1);
+    
+    $qb = $this->getDoctrine()
       ->getRepository('AppBundle:Programmer')
-      ->findAll();
+      ->findAllQueryBuilder();
 
     $response = $this->createApiResponse(['programmers' => $programmers], 200);
 
