@@ -79,6 +79,8 @@ class ProgrammerController extends BaseController {
       ->getRepository('AppBundle:Programmer')
       ->findAllQueryBuilder();
     
+    $paginatedCollection = $this->get('pagination_factory')->createCollection($qb, $request, 'api_programmers_collection');
+    
     $response = $this->createApiResponse($paginatedCollection, 200);
 
     return $response;

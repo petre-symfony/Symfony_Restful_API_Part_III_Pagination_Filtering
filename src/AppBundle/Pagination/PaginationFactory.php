@@ -15,7 +15,7 @@ class PaginationFactory {
   }
 
 
-  public function createCollection(QueryBuilder $qb, Request $request, $route, array $routeParams){
+  public function createCollection(QueryBuilder $qb, Request $request, $route, array $routeParams = array()){
     $page = $request->query->get('page', 1);
     
     $adapter = new DoctrineORMAdapter($qb);
@@ -51,5 +51,7 @@ class PaginationFactory {
     if ($pagerfanta->hasPreviousPage()){
       $paginatedCollection->addLink('prev', $createLinkUrl($pagerfanta->getPreviousPage()));
     } 
+    
+    return $paginatedCollection;
   }
 }
