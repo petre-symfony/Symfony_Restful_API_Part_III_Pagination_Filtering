@@ -74,7 +74,21 @@ class ProgrammerControllerTest extends ApiTestCase {
 
     $response = $this->client->get('/api/programmers');
     $this->assertEquals(200, $response->getStatusCode());
-    $this->asserter()->assertResponsePropertyEquals($response, 'programmers[5].nickname', 'Programmer5');
+    $this->asserter()->assertResponsePropertyEquals(
+      $response, 
+      'programmers[5].nickname', 
+      'Programmer5'
+    );
+    $this->asserter()->assertResponsePropertyEquals(
+      $response, 
+      'count', 
+      10
+    );
+    $this->asserter()->assertResponsePropertyEquals(
+      $response, 
+      'total', 
+      25
+    );
   }
 
   public function testPUTProgrammer() {
