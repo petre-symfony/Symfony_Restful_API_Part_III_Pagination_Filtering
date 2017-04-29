@@ -108,7 +108,7 @@ class ProgrammerControllerTest extends ApiTestCase {
       10
     );
     $lastUrl = $this->asserter()->readResponseProperty($response, '_links.last');
-    $response = $this->client->get($lasttUrl);
+    $response = $this->client->get($lastUrl);
     
     $this->asserter()->assertResponsePropertyEquals(
       $response, 

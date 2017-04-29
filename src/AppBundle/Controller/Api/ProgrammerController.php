@@ -98,6 +98,24 @@ class ProgrammerController extends BaseController {
     
     $route = 'api_programmers_collection';
     $routeParams = array();
+    $createLinkUrl = function($targetPage) use ($route, $routeParams){
+      return $this->generateUrl($route, array_merge(
+        $routeParams,
+        array('page' => $targetPage)
+      ));
+    };
+    
+    $paginatedCollection->addLink('self', $createLinkUrl($page));
+    $paginatedCollection->addLink('first', $createLinkUrl(1));
+    $paginatedCollection->addLink('last', $createLinkUrl($pagerfanta->getNbPages()));
+    
+    if ($pagerfanta->hasNextPage()){
+      $paginatedCollection->addLink('next', $createLinkUrl($pagerfanta->getNextPage()));
+    }
+    
+    if ($pagerfanta->hasPreviousPage()){
+      $paginatedCollection->addLink('prev', $createLinkUrl($pagerfanta->getPreviousPage()));
+    }
     
     $response = $this->createApiResponse($paginatedCollection, 200);
 
