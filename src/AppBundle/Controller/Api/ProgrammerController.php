@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Pagerfanta\Pagerfanta;
 
 class ProgrammerController extends BaseController {
   /**
@@ -77,6 +78,12 @@ class ProgrammerController extends BaseController {
     $qb = $this->getDoctrine()
       ->getRepository('AppBundle:Programmer')
       ->findAllQueryBuilder();
+    
+    $adapter = new DoctrineORMAdapter($qb);
+    $pagerfanta = new Pagerfanta($adapter);
+    $pagerfanta->setMaxPerPage(10);
+    $pagerfanta->setCurrentPage($page);
+    
 
     $response = $this->createApiResponse(['programmers' => $programmers], 200);
 
