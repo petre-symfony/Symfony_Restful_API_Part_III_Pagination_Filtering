@@ -71,7 +71,7 @@ class ProgrammerController extends BaseController {
   }
 
   /**
-   * @Route("/api/programmers")
+   * @Route("/api/programmers", name="api_programmers_collection")
    * @Method("GET")
    */
   public function listAction(Request $request) {
@@ -95,6 +95,10 @@ class ProgrammerController extends BaseController {
       $programmers, 
       $pagerfanta->getNbResults()
     );
+    
+    $route = 'api_programmers_collection';
+    $routeParams = array();
+    
     $response = $this->createApiResponse($paginatedCollection, 200);
 
     return $response;
