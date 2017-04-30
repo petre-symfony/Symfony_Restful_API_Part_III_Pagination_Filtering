@@ -38,7 +38,9 @@ class LinkSerializationSubscriber implements EventSubscriberInterface{
       }
     }
     
-    $visitor->addData('_links', $links);
+    if ($links){
+      $visitor->addData('_links', $links);
+    }
   }
 
 
