@@ -12,6 +12,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="battle_programmer")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ProgrammerRepository")
  * @Serializer\ExclusionPolicy("all")
+ * @Link(
+ *   "self",
+ *   route = "api_programmers_show",
+ *   params = { "nickname": "object.getNickname()" }
+ * )
  */
 class Programmer {
   /**
