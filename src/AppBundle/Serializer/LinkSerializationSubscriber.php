@@ -6,16 +6,19 @@ use JMS\Serializer\EventDispatcher\ObjectEvent;
 use JMS\Serializer\JsonSerializationVisitor;
 use Doctrine\Common\Annotations\Reader;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use AppBundle\Entity\Programmer;
 use AppBundle\Annotation\Link;
 
 class LinkSerializationSubscriber implements EventSubscriberInterface{
   private $router;
   private $annotationReader;
+  private $expressionLanguage;
   
   public function __construct(RouterInterface $router, Reader $annotationReader) {
     $this->router = $router;
     $this->annotationReader = $annotationReader;
+    $this->expressionLanguage = new ExpressionLanguage();
   }
 
     public function onPostSerialize(ObjectEvent $event){
@@ -31,7 +34,7 @@ class LinkSerializationSubscriber implements EventSubscriberInterface{
       if ($annotation instanceof Link){
         $uri = $this->router->generate(
           $annotation->route, 
-          $annotation->params
+          $this->resolveParams($annotation->params, $object)
         );
         
         $links[$annotation->name] = $uri;
@@ -43,7 +46,7 @@ class LinkSerializationSubscriber implements EventSubscriberInterface{
     }
   }
 
-
+  
   public static function getSubscribedEvents() {
     return array(
       array(
@@ -52,5 +55,14 @@ class LinkSerializationSubscriber implements EventSubscriberInterface{
         'format' => 'json'
       )    
     );
+  }
+  
+  private function resolveParams(array $params, $object) {
+    foreach ($params as $key => $param){
+      $params[$key] = $this->expressionLanguage
+        ->evaluate($param, array('object' => $object));
+    }
+    
+    return $params;
   }
 }
