@@ -112,7 +112,16 @@ abstract class BaseController extends Controller {
   protected function serialize($data, $format = 'json') {
     $context = new SerializationContext();
     $context->setSerializeNull(true);
+    
+    $request = $this->get('request_stack')->getCurrentRequest();
+    $groups = array('Default');
+    
+    if($request->query->get('deep')){
+      $groups[] = 'deep';
+    }
 
+    $context->setGroups($groups);
+    
     return $this->container->get('jms_serializer')
       ->serialize($data, $format, $context);
   }
