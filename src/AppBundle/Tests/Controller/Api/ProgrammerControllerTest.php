@@ -45,7 +45,11 @@ class ProgrammerControllerTest extends ApiTestCase {
       'tagLine'
     ));
     $this->asserter()->assertResponsePropertyEquals($response, 'nickname', 'UnitTester');
-    $this->asserter()->assertResponsePropertyEquals($response, 'uri', '/api/programmers/UnitTester');
+    $this->asserter()->assertResponsePropertyEquals(
+      $response, 
+      'uri',
+      $this->adjustUri('/api/programmers/UnitTester')
+    );
   }
 
   public function testGETProgrammersCollection() {
@@ -225,5 +229,15 @@ EOF;
     $this->asserter()->assertResponsePropertyEquals($response, 'type', 'about:blank');
     $this->asserter()->assertResponsePropertyEquals($response, 'title', 'Not Found');
     $this->asserter()->assertResponsePropertyEquals($response, 'detail', 'No programmer found with nickname "fake"');
+  }
+  
+  /**
+   * Helps when comparing expected URI's
+   * 
+   * @param $uri
+   * @return string
+   */
+  protected function adjustUri($uri) {
+    return '/app_test.php'.$uri;
   }
 }
